@@ -65,7 +65,7 @@ class Repo:
 
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(extract_path.parent)
-        os.rename("./liliths-throne-public-dev/", extract_path)
+        # os.rename("./liliths-throne-public-dev/", extract_path)
 
     def fetch_latest_dict(self) -> None:
         output_url = PARATRANZ_API_URL + "/artifacts"  # use post
