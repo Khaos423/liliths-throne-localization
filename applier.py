@@ -537,6 +537,58 @@ class Applier:
             )
             translation += ";"
 
+        if (
+                original.endswith(",")
+                ^ translation.strip().endswith(",")
+                and not original.endswith(", // ...")
+        ):
+            logger.warning(
+                "\t****%s[%s]:翻译文本末尾%s逗号！|https://paratranz.cn/projects/%s/strings?text=%s",
+                file.as_posix(),
+                line,
+                "漏了"if original.endswith(",") else "多了",
+                PARATRANZ_PROJECT_ID,
+                quote(original),
+            )
+            if original.endswith(","):
+                translation = translation + ","
+            else:
+                translation = translation[:-1]
+        elif (
+                original.endswith(";")
+                ^ translation.strip().endswith(";")
+        ):
+            logger.warning(
+                "\t****%s[%s]:翻译文本末尾%s分号！|https://paratranz.cn/projects/%s/strings?text=%s",
+                file.as_posix(),
+                line,
+                "漏了" if original.endswith(";") else "多了",
+                PARATRANZ_PROJECT_ID,
+                quote(original),
+            )
+            if original.endswith(";"):
+                translation = translation + ";"
+            else:
+                translation = translation[:-1]
+        elif (
+            original.startswith("+")
+            ^ translation.strip().startswith("+")
+            and not translation.startswith("//")
+            and not translation.startswith("\"对<span style=")
+        ):
+            logger.warning(
+                "\t****%s[%s]:翻译文本开头%s加号！|https://paratranz.cn/projects/%s/strings?text=%s",
+                file.as_posix(),
+                line,
+                "漏了" if original.startswith("+") else "多了",
+                PARATRANZ_PROJECT_ID,
+                quote(original),
+            )
+            if original.startswith("+"):
+                translation = "+" + translation
+            else:
+                translation = translation[1:]
+
         if ".speak" in translation or "］" in translation:
             if ".speaking" in translation:
                 logger.warning(
